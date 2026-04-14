@@ -1,6 +1,7 @@
 #include "lsm303.h"
 #include <Arduino.h>
 #include <math.h>
+#include <config.h>
 
 static Adafruit_LSM303DLH_Mag_Unified lsm_mag(12345);
 static Adafruit_LSM303_Accel_Unified  lsm_acc(54321);
@@ -9,8 +10,12 @@ LsmData lsm_data;
 bool    lsm_ok = false;
 
 void lsm303_init() {
-    bool mag_ok = lsm_mag.begin();
-    bool acc_ok = lsm_acc.begin();
+    Serial.println("initialising LSM303...");
+
+    bool mag_ok = lsm_mag.begin(LSM303_MAG_ADDR);
+    Serial.printf("  lsm_mag.begin() returned: %s\n", mag_ok ? "true" : "false");
+    bool acc_ok = lsm_acc.begin(LSM303_ACCEL_ADDR);
+    Serial.printf("  lsm_acc.begin() returned: %s\n", acc_ok ? "true" : "false");
 
     if (mag_ok && acc_ok) {
         Serial.println("LSM303 found");
@@ -22,11 +27,24 @@ void lsm303_init() {
 }
 
 void lsm303_read() {
-    if (!lsm_ok) return;
+    if (!lsm_ok) {
+        Serial.println("LSM303 not ok — skipping read");
+        return;
+    }
 
     sensors_event_t mag_event, acc_event;
     lsm_mag.getEvent(&mag_event);
     lsm_acc.getEvent(&acc_event);
+
+    Serial.printf("LSM303 raw mag:  x=%.2f y=%.2f z=%.2f\n",
+        mag_event.magnetic.x,
+        mag_event.magnetic.y,
+        mag_event.magnetic.z);
+
+    Serial.printf("LSM303 raw acc:  x=%.2f y=%.2f z=%.2f\n",
+        acc_event.acceleration.x,
+        acc_event.acceleration.y,
+        acc_event.acceleration.z);
 
     lsm_data.mag_x = mag_event.magnetic.x;
     lsm_data.mag_y = mag_event.magnetic.y;

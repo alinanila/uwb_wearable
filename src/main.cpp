@@ -7,6 +7,24 @@
 #include "lsm303.h"
 #include "publisher.h"
 
+void i2c_scan() {
+    Serial.println("scanning I2C bus...");
+    int found = 0;
+    for (uint8_t addr = 1; addr < 127; addr++) {
+        Wire.beginTransmission(addr);
+        uint8_t err = Wire.endTransmission();
+        if (err == 0) {
+            Serial.printf("  found device at 0x%02X\n", addr);
+            found++;
+        }
+    }
+    if (found == 0) {
+        Serial.println("  no devices found");
+    } else {
+        Serial.printf("  %d device(s) found\n", found);
+    }
+}
+
 void setup() {
     Serial.begin(115200);
     delay(1000);
@@ -14,6 +32,9 @@ void setup() {
 
     Wire.begin();
 
+    delay(20000);
+
+    i2c_scan();
     bno085_init();
     lsm303_init();
     wifi_connect();

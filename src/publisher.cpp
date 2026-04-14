@@ -6,7 +6,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoJson.h>
 
-static WiFiUdp udp;
+static WiFiUDP udp;
 
 void publisher_init() {
     udp.begin(UDP_PORT);
