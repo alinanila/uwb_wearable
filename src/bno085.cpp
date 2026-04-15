@@ -4,6 +4,9 @@
 
 static Adafruit_BNO08x bno08x;
 static sh2_SensorValue_t bno_value;
+static uint32_t last_bno_data_ms = 0;
+const uint32_t BNO_TIMEOUT_MS = 5000;  // reset if no data for 5 seconds
+
 
 BnoData bno_data;
 bool    bno_ok = false;
@@ -20,19 +23,42 @@ static void enable_reports() {
 }
 
 void bno085_init() {
-    if (bno08x.begin_I2C()) {
-        Serial.println("BNO085 found");
-        enable_reports();
-        bno_ok = true;
-    } else {
-        Serial.println("BNO085 not found — check wiring");
+    Serial.println("initialising BNO085...");
+
+    // retry if fails first time, give up after 3
+
+    for (int attempt = 1; attempt <= 3; attempt++) {
+        Serial.printf("  attempt %d...\n", attempt);
+        if (bno08x.begin_I2C()) {
+            Serial.println("BNO085 found");
+            enable_reports();
+            bno_ok = true;
+            return;
+        }
+        Serial.printf("  attempt %d failed\n", attempt);
+        delay(500);  // wait before retry
+    }
+    Serial.println("BNO085 not found after 3 attempts — check wiring");
+}
+
+void bno085_reset_if_hung() {
+    if (!bno_ok) return;
+    if (millis() - last_bno_data_ms > BNO_TIMEOUT_MS) {
+        Serial.println("BNO085 appears hung — reinitialising...");
+        bno_ok = false;
+        bno_data.valid = false;
+        delay(100);
+        bno085_init();
+        last_bno_data_ms = millis();
     }
 }
 
 void bno085_read() {
     if (!bno_ok) return;
 
+    bool got_data = false;
     while (bno08x.getSensorEvent(&bno_value)) {
+        got_data = true;
         switch (bno_value.sensorId) {
             case SH2_ROTATION_VECTOR:
                 bno_data.quat_i        = bno_value.un.rotationVector.i;
@@ -77,5 +103,9 @@ void bno085_read() {
                 break;
         }
         bno_data.valid = true;
+    }
+
+    if (got_data) {
+        last_bno_data_ms = millis();
     }
 }

@@ -31,12 +31,16 @@ void setup() {
     Serial.println("booting...");
 
     Wire.begin();
-
-    delay(20000);
+    Wire.setClock(100000);
+    delay(100);
 
     i2c_scan();
+
     bno085_init();
+    delay(500);
     lsm303_init();
+    delay(100);
+
     wifi_connect();
     publisher_init();
 
@@ -46,6 +50,7 @@ void setup() {
 void loop() {
     static uint32_t last_publish = 0;
 
+    bno085_reset_if_hung();
     bno085_read();
     lsm303_read();
 

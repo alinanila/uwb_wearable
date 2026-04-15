@@ -58,4 +58,7 @@ void bno085_init();
 // drain all pending BNO085 reports into bno_data
 void bno085_read();
 
+// reset connection if BNO085 hangs
+void bno085_reset_if_hung();
+
 #endif // BNO085_H
