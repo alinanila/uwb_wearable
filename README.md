@@ -1,6 +1,7 @@
 # Wearable Device for Non-Sighted Stage Navigation
 Wearable aspect of the UWB app. This is the code for the wearable electronics, to be integrated with the [UWB localisation system](https://github.com/alinanila/uwb_app).
 
+Move to FreeRTOS so that can add button interrupts and tasks for haptics.
 Need to find a way to do bluetooth audio on esp.
 
 ## System overview
