@@ -63,21 +63,21 @@ void publisher_send() {
     }
 
     // LSM303
-    if (lsm_ok && lsm_data.valid) {
-        JsonObject lsm = doc["lsm303"].to<JsonObject>();
+    // if (lsm_ok && lsm_data.valid) {
+    //     JsonObject lsm = doc["lsm303"].to<JsonObject>();
 
-        JsonObject mag = lsm["magnetometer"].to<JsonObject>();
-        mag["x"] = lsm_data.mag_x;
-        mag["y"] = lsm_data.mag_y;
-        mag["z"] = lsm_data.mag_z;
+    //     JsonObject mag = lsm["magnetometer"].to<JsonObject>();
+    //     mag["x"] = lsm_data.mag_x;
+    //     mag["y"] = lsm_data.mag_y;
+    //     mag["z"] = lsm_data.mag_z;
 
-        JsonObject acc = lsm["accelerometer"].to<JsonObject>();
-        acc["x"] = lsm_data.acc_x;
-        acc["y"] = lsm_data.acc_y;
-        acc["z"] = lsm_data.acc_z;
+    //     JsonObject acc = lsm["accelerometer"].to<JsonObject>();
+    //     acc["x"] = lsm_data.acc_x;
+    //     acc["y"] = lsm_data.acc_y;
+    //     acc["z"] = lsm_data.acc_z;
 
-        lsm["heading"] = lsm_data.heading;
-    }
+    //     lsm["heading"] = lsm_data.heading;
+    // }
 
     char buf[1024];
     size_t len = serializeJson(doc, buf, sizeof(buf));

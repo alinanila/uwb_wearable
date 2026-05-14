@@ -4,7 +4,7 @@
 #include "config.h"
 #include "wifi_manager.h"
 #include "bno085.h"
-#include "lsm303.h"
+// #include "lsm303.h"
 #include "publisher.h"
 
 void i2c_scan() {
@@ -28,18 +28,18 @@ void i2c_scan() {
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("booting...");
+    Serial.println("booting");
 
     Wire.begin();
     Wire.setClock(100000);
     delay(100);
 
-    i2c_scan();
+    // i2c_scan();
 
     bno085_init();
     delay(500);
-    lsm303_init();
-    delay(100);
+    // lsm303_init();
+    // delay(100);
 
     wifi_connect();
     publisher_init();
@@ -52,7 +52,7 @@ void loop() {
 
     bno085_reset_if_hung();
     bno085_read();
-    lsm303_read();
+    // lsm303_read();
 
     uint32_t now = millis();
     if (now - last_publish >= PUBLISH_INTERVAL_MS) {

@@ -22,7 +22,7 @@ const uint32_t BNO_FAST_INTERVAL_US = 10000;   // 100Hz
 const uint32_t BNO_SLOW_INTERVAL_US = 200000;  // 5Hz
 
 // LSM303 I2C addresses 
-const uint8_t LSM303_MAG_ADDR  = 0x1E;
-const uint8_t LSM303_ACCEL_ADDR = 0x18;
+// const uint8_t LSM303_MAG_ADDR  = 0x1E;
+// const uint8_t LSM303_ACCEL_ADDR = 0x18;
 
 #endif // CONFIG_H
